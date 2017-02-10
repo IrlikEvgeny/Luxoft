@@ -6,20 +6,20 @@ import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.sql.Time;
 import java.util.concurrent.TimeUnit;
 
 @SuppressLint("NewApi")
 @TargetApi(Build.VERSION_CODES.GINGERBREAD)
 public class MainActivity extends Activity {
 
-    Button btnStart, btnStop;
+    Button btnStart, btnStop, startRealx;
     TextView textViewTime;
+    private long setTime = 20000;
+    private long timeRelax = 10000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,15 +28,24 @@ public class MainActivity extends Activity {
 
         btnStart = (Button) findViewById(R.id.btnStart);
         btnStop = (Button) findViewById(R.id.btnStop);
+        startRealx = (Button) findViewById(R.id.btnRelax);
         textViewTime = (TextView) findViewById(R.id.textViewTime);
 
-        textViewTime.setText("00:00:00");
+        textViewTime.setText("00h00m00s");
 
-        final CounterClass timer = new CounterClass(50000, 1000);
+        final CounterClass timer = new CounterClass(setTime, 1000);
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 timer.start();
+            }
+        });
+
+        final CounterClass timerRelax = new CounterClass(timeRelax, 1000);
+        startRealx.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                timerRelax.start();
             }
         });
 
@@ -70,7 +79,7 @@ public class MainActivity extends Activity {
         @Override
         public void onTick(long millisUntilFinished) {
             long millis = millisUntilFinished;
-            String hms = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis),
+            String hms = String.format("%02dh%02dm%02ds", TimeUnit.MILLISECONDS.toHours(millis),
                     TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
                     TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
             System.out.println(hms);
@@ -80,7 +89,9 @@ public class MainActivity extends Activity {
 
         @Override
         public void onFinish() {
-            textViewTime.setText("Completed!");
+
+            textViewTime.setText("Relax, pls!");
+
         }
     }
 
